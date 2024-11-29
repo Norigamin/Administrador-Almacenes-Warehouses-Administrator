@@ -1,7 +1,7 @@
-from tkinter import *
+from tkinter import Button
 
 class ShowPasswordButton:
-    def __init__(self,window,entrada:Entry,x:int,y:int):
+    def __init__(self,window,entrada,x:int,y:int):
         """
         Crea un botón para mostrar/ocultar el contenido de una entrada de contraseña.
         """

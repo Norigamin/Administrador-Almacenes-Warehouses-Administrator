@@ -1,8 +1,3 @@
-import sys
-import os
-
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
 from tkinter import *
 from tkinter import ttk, messagebox, simpledialog
 from models.Warehouse import Warehouse
@@ -279,18 +274,18 @@ class Dashboard:
         self.section_window_open = False
         self.almacen_table.selection_remove(self.almacen_table.selection())
 
-
     def delete_section(self):
         selected_item = self.section_table.selection()
-
         if not selected_item:
             messagebox.showwarning("Eliminar Sección", "Seleccione una sección para eliminar.")
             return
 
         confirm = messagebox.askyesno("Eliminar Sección", "¿Está seguro de que desea eliminar esta sección?")
-
         if confirm:
             for item in selected_item:
+                section_id = int(self.section_table.item(item, "values")[0])
+                for almacen in self.almacenes:
+                    almacen.secciones = [seccion for seccion in almacen.getSecciones() if seccion.id != section_id]
                 self.section_table.delete(item)
 
     def search_section_window(self):
@@ -482,12 +477,11 @@ class Dashboard:
         product_to_edit = (int(item_values[0]), item_values[1], item_values[2], item_values[3], item_values[4])
         self.add_product_window(product_to_edit=product_to_edit)
 
-
     def add_product_button(self):
         nombre = self.product_nombre.get().strip()
         precio = self.product_precio.get().strip()
         descripcion = self.product_descripcion.get('1.0', 'end-1c')
-        cantidad = self.product_cantidad.get().strip()   
+        cantidad = self.product_cantidad.get().strip() 
         # Obtener datos de la sección seleccionada
         selected_section = self.section_table.selection()
         section_data = self.section_table.item(selected_section[0], "values")
@@ -496,11 +490,11 @@ class Dashboard:
         if not nombre or not precio or not cantidad or not descripcion:
             messagebox.showerror("Error", "Todos los campos son obligatorios.")
             return
-
-        if not nombre.replace(" ", "").isalpha() or "  " in nombre:
+        
+        if not nombre.replace(" ", "").isalpha() or " " in nombre:
             messagebox.showerror("Error", "El campo 'Nombre del Producto' no debe contener más de un espacio, números o caracteres no válidos.")
             return
-
+        
         if not precio.replace('.', '', 1).isdigit() or float(precio) <= 0:
             messagebox.showerror("Error", "El campo 'Precio' debe ser un número positivo.")
             return
@@ -508,17 +502,15 @@ class Dashboard:
         if not cantidad.isdigit() or int(cantidad) < 0:
             messagebox.showerror("Error", "El campo 'Cantidad de Productos' debe ser un número entero positivo.")
             return
-
+        
         # Crear el producto
-        nuevo_producto = Product(self.product_id_counter, nombre, float(precio), int(cantidad), descripcion)
-
+        nuevo_producto = Product(self.product_id_counter, nombre, float(precio), int(cantidad), 
+        descripcion)
         # Buscar la sección por ID
         for almacen in self.almacenes:
             for seccion in almacen.getSecciones():
-                # Comprobar si la sección es la seleccionada
                 if seccion.id == current_section_id:
                     seccion.agregarProducto(nuevo_producto)
-                    # Después de agregar el producto, actualizamos la tabla de productos
                     self.product_id_counter += 1
                     self.product_table.insert("", "end", values=(nuevo_producto.id,nuevo_producto.nombre,nuevo_producto.precio,nuevo_producto.cantidad,nuevo_producto.descripcion,almacen.nombre,seccion.nombre))
                     messagebox.showinfo("Éxito", "Producto creado con éxito.")
@@ -526,27 +518,20 @@ class Dashboard:
                     self.product_window_open = False
                     return
 
-        messagebox.showerror("Error", "Sección no encontrada.")
-
     def delete_product(self):
-        selected_item = self.product_table.selection()  
-    
+        selected_item = self.product_table.selection()
         if not selected_item:
             messagebox.showwarning("Eliminar Producto", "Seleccione un producto para eliminar.")
             return
-    
+
         confirm = messagebox.askyesno("Eliminar Producto", "¿Está seguro de que desea eliminar este producto?")
-    
         if confirm:
             for item in selected_item:
-                product_id = self.product_table.item(item, "values")[0]
-                
-                self.product_table.delete(item)
-    
+                product_id = int(self.product_table.item(item, "values")[0])
                 for almacen in self.almacenes:
                     for seccion in almacen.getSecciones():
                         seccion.productos = [producto for producto in seccion.getProductos() if producto.id != product_id]
-    
+                self.product_table.delete(item)
 
     def search_product_window(self):
         self.search_product_w = Toplevel(self.ventana)
@@ -616,6 +601,7 @@ class Dashboard:
     def mostrarDetalles(self):
         selected_item = self.product_table.selection()
         if not selected_item:
+            messagebox.showwarning("Detalles del Producto", "Seleccion un Producto para mostrar los detalles.")
             return
 
         selected_values = self.product_table.item(selected_item[0], 'values')
@@ -658,8 +644,3 @@ class Dashboard:
                         )
                         messagebox.showinfo("Detalles del Producto", resultado_texto)
                         return
-
-if __name__ == "__main__":
-    ventana = Tk()
-    Dashboard(ventana)
-    ventana.mainloop()

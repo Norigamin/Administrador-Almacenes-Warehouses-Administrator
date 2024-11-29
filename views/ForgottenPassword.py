@@ -1,4 +1,4 @@
-from tkinter import *
+from tkinter import Label,Entry,Button,Toplevel
 
 from controllers.ShowPasswordButton import ShowPasswordButton
 from views.Register import *

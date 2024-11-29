@@ -1,4 +1,4 @@
-from tkinter import *
+from tkinter import Label,Entry,Button
 
 from controllers.ShowPasswordButton import ShowPasswordButton
 

@@ -1,4 +1,4 @@
-from tkinter import *
+from tkinter import Label,Tk,Entry,Button,Toplevel
 
 from views.Dashboard import Dashboard
 from views.Register import *

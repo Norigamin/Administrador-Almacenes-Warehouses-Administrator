@@ -39,11 +39,11 @@ class TypeProduct:
 
         # Inicializar los Combobox dinámicos según el tipo de producto seleccionado
         if seleccion == "Tecnología":
-            label = Label(self.ventana, text="¿Este Producto Tiene Garantía?")
+            label = Label(self.ventana, text="Tiempo de garantia:")
             label.place(x=x_desplegable - 3, y=y_desplegable + 50)
             self.widgets_dinamicos.append(label)
 
-            self.desplegable_garantia = ttk.Combobox(self.ventana, values=["SI", "NO"], state="readonly", width=3)
+            self.desplegable_garantia = ttk.Combobox(self.ventana, values=[f"{meses} meses" for meses in range(6, 13)] + [f"{anios} año" if anios == 1 else f"{anios} años" for anios in range(1, 6)], state="readonly", width=9)
             self.desplegable_garantia.place(x=x_desplegable, y=y_desplegable + 80)
             self.widgets_dinamicos.append(self.desplegable_garantia)
 
@@ -61,7 +61,7 @@ class TypeProduct:
             alimento_label.place(x=x_desplegable - 15, y=y_desplegable + 50)
             self.widgets_dinamicos.append(alimento_label)
 
-            self.desplegable_dia = ttk.Combobox(self.ventana, values=[dia for dia in str(range(1, 32)) if dia < 10 in dia], state="readonly", width=3)
+            self.desplegable_dia = ttk.Combobox(self.ventana, values=[dia for dia in range(1, 32)], state="readonly", width=3)
             self.desplegable_dia.place(x=x_desplegable, y=y_desplegable + 80)
             self.widgets_dinamicos.append(self.desplegable_dia)
             
