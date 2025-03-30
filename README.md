@@ -1,3 +1,3 @@
-# Administrador Almacenes / Warehouses Administrator
+# Administrador de Almacenes / Warehouses Administrator
 
 A Warehouse Administrator made with full POO python, make by me for learning, have some issues. Just for learning.
